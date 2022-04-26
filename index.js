@@ -22,6 +22,7 @@ async function run() {
     try {
         await client.connect()
         const serviceCollection = client.db('theCarDoctor').collection('service')
+        const orderCollection = client.db('theCarDoctor').collection('order')
 
         app.get('/service', async (req, res) => {
             const query = {}
@@ -44,13 +45,21 @@ async function run() {
             res.send(result)
 
         })
-        
+
         // Delete
         app.delete('/service/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const result = await serviceCollection.deleteOne(query);
             res.send(result);
+        })
+
+
+        // order collention api
+        app.post('/order', async (req, res) => {
+            const order = req.body
+            const result = await orderCollection.insertOne(order)
+            res.send(result)
         })
     }
     finally {
