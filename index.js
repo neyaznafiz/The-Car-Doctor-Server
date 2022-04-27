@@ -17,20 +17,22 @@ app.use(express.json())
 
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization
-
+    console.log(authHeader);
     if (!authHeader) {
         return res.status(401).send({ message: 'unauthorized access' })
     }
 
-    const token = authHeader.split(' ')[1]
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).send({ message: 'Forbidden access' })
-        }
-        console.log('decoded', decoded);
-        req.decoded = decoded
-        next()
-    })
+    else {
+        const token = authHeader.split(' ')[1]
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+            if (err) {
+                return res.status(403).send({ message: 'Forbidden access' })
+            }
+            console.log('decoded', decoded);
+            req.decoded = decoded
+            next()
+        })
+    }
 }
 
 
@@ -94,6 +96,7 @@ async function run() {
                 const decodedEmail = req.decoded.email
                 const email = req.query.email
                 console.log(email)
+
                 if (email === decodedEmail) {
                     const query = { email: email }
                     const cursor = orderCollection.find(query)
@@ -128,7 +131,7 @@ app.get('/', (req, res) => {
 
 
 //
-app.get('/hero', (req, res)=>{
+app.get('/hero', (req, res) => {
     res.send('hero meets heroku')
 })
 
